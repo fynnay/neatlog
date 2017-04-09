@@ -16,11 +16,7 @@ class _Logger(object):
             # Create a new logger:
             LOG = _Logger("logger-name")
             
-            The format of the logs looks like this:
-            format : <scriptname>  -     <time>     -  <function name>  - <line>  - <log level>  - <log message>
-            example: pCore.py      -  11:20:53,849  -        main       -   101   -    ERROR     - something
-            
-            # How to log stuff at different levels
+            # Log stuff at different levels:
             LOG.debug("something")
             LOG.info("something")
             LOG.warning("something")
@@ -30,11 +26,9 @@ class _Logger(object):
 
             # Change level of the console logger
             By default only errors, critical and exceptions are written to the console.
-            If yo uwant to show more levels call any of the following
+            If you want to show more levels call any of the following
                 'debug' | 'info' | 'warning' | 'error' | 'critical'
-            in LOG.setLevel('debug'):
-            Revert to default:
-            LOG.verbose(False)
+            with LOG.setLevel('debug'):
 
             # Disable/Enable the file handler
             By default the logs are only shown in the console.
@@ -57,11 +51,11 @@ class _Logger(object):
                 Access the logger to change advanced settings.
 
             filePath
-                Path to the current log-file
+                Path to the current log-file. You need to set this before enabling the file handler.
             
             formatter
-                Access the Formatter to change format of the logs.
-                This is the default Formatter:
+                Access the Formatter to change format of the logs using logging.Formatter syntax.
+                Example:
                     self.formatter = logging.Formatter("%(asctime)s:%(msecs)d - %(funcName)s - %(lineno)d - %(levelname)s : %(message)s","%H:%M:%S")
 
         FUNCTIONS:
@@ -96,7 +90,7 @@ class _Logger(object):
         datetime.now(),
         platform.uname()[1],
         platform.uname()[0].lower(),
-        "<scriptname> - <time> - <function name> - <line> - <log level> - <log message>")
+        "<level> : <script name> :: <time> - <function name> - <line> >> <custom message>")
         
         # Create Color Formatter
         self.colorFormatter = colorlog.ColoredFormatter('%(log_color)s%(levelname)s : %(name)s :: %(funcName)s >> %(message)s')
