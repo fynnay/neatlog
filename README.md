@@ -7,14 +7,14 @@ The point of it is to let You create informative and easy to read logs without h
 
 Basic usage:
 
-```
+```python
 from logger import logger
 LOG = logger._Logger('test')
 LOG.error('something')
 ```
 
 Enable file handler:
-```
+```python
 LOG.filePath = "/Users/local/Desktop/logs/test.log"
 LOG.enableFileHandler(True)
 LOG.debug('something')
