@@ -20,4 +20,4 @@ LOG.enableFileHandler(True)
 LOG.debug('something')
 ```
 
-This module is still under development, so feel free to suggest stuff or point out bugs etc..
+Feel free to suggest stuff or point out bugs etc..
