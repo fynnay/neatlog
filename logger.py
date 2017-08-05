@@ -3,7 +3,6 @@ import inspect
 import traceback
 import platform
 from datetime import datetime
-from getParentCaller import main as getPC
 import logging
 import colorlog
 
@@ -62,7 +61,7 @@ class _Logger(object):
             enableFileHandler
 
     '''
-    def __init__(self,name,logPath=None,color=True):
+    def __init__(self,name,filePath=None,color=True):
         # Name the logger
         if color is True:
             self.logger = colorlog.getLogger(name)
@@ -76,15 +75,15 @@ class _Logger(object):
         self.logger.setLevel(logging.DEBUG)
 
         # Create substitute functions for log methods so they can be accessec at the base of the class
-        self.debug     = self.logger.debug
-        self.info      = self.logger.info
-        self.warning   = self.logger.warning
-        self.error     = self.logger.error
-        self.critical  = self.logger.critical
-        self.exception = self.logger.exception
+        # self.debug     = self.logger.debug
+        # self.info      = self.logger.info
+        # self.warning   = self.logger.warning
+        # self.error     = self.logger.error
+        # self.critical  = self.logger.critical
+        # self.exception = self.logger.exception
 
         # Create header to be written at the top of the .log file
-        topScript = getPC(top=True)[0]
+        topScript = getParentCaller(top=True)[0]
         self.header    = "---- LOG ----\nFile  : %s\nDate  : %s\nHost  : %s\nOS    : %s\n\n%s\n\n"%\
         (topScript,
         datetime.now(),
@@ -102,7 +101,7 @@ class _Logger(object):
         self.formatter      = logging.Formatter('%(levelname)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s',"%H:%M:%S")
 
         # Filepath used by the FileHandler. Has to be set before enabling the FileHandler
-        self.filePath = logPath
+        self.filePath = filePath
         self.fh       = None
 
         # Create console handler
@@ -113,6 +112,28 @@ class _Logger(object):
         else:
             self.ch.setFormatter(self.chFormatter)
         self.enableConsoleHandler(True)
+
+    def formatForLogging(self,inp):
+            msg = " ".join( [str(i) for i in inp] )
+            return msg
+
+    def debug(self,*args,**kwargs):
+        return self.logger.debug(self.formatForLogging(args))
+
+    def info(self,*args,**kwargs):
+        return self.logger.info(self.formatForLogging(args))
+    
+    def warning(self,*args,**kwargs):
+        return self.logger.warning(self.formatForLogging(args))
+
+    def error(self,*args,**kwargs):
+        return self.logger.error(self.formatForLogging(args))
+
+    def critical(self,*args,**kwargs):
+        return self.logger.critical(self.formatForLogging(args))
+
+    def exception(self,*args,**kwargs):
+        return self.logger.exception(self.formatForLogging(args))
 
     def enableConsoleHandler(self,state):
         # Check if there is already a StreamHandler
@@ -189,13 +210,28 @@ class _Logger(object):
         elif isinstance(state,int):
             self.ch.setLevel(state)
 
+def getParentCaller(top=False):
+    '''
+    Gets the path to the script
+    '''    
+    # Inspect current call stack
+    insp    = inspect.getouterframes(inspect.currentframe(),2)
+    # Get path of the parent script of this one. If there is none, get the topmost ancestor.
+    csPath  = insp[1][1] if not insp[1][1] is None and not insp[1] is None else insp[len(insp)-1][1]
+    # Get topmost ancestor if *top is True
+    if top is True:
+        csPath = insp[len(insp)-1][1]
+
+    # Return as list, to prevent having to rewrite all scripts that use this function if you add more things to return later.
+    return [csPath]
+
 def test():
     LOG = _Logger("logging_howto.py")
     LOG.setLevel('debug')
 
     # Create some logs from lowest to highest level
-    LOG.debug("Houston, we have a %s", "thorny problem")
-    LOG.info('info')
+    LOG.debug("I have",99, "problems","but a",type(()),"ain't one.")
+    LOG.info('info','15')
     LOG.warning('warning')
     LOG.error('error')
     LOG.critical('critical')
