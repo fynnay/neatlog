@@ -79,13 +79,13 @@ class _Logger():
         self.logger.setLevel(logging.DEBUG)
         
         # Set formatter according to console verbosity
-        self.chVerbosity = verbosity
+        self.chVerbosity    = verbosity
         self.chFormatter    = None
         self.fhFormatter    = None
 
         # Console handler
         self.ch = colorlog.StreamHandler()
-        self.setVerbosity()
+        self.setVerbosity(level=verbosity)
         self.enableConsoleHandler(True)
 
         # File handler
@@ -199,13 +199,15 @@ class _Logger():
         else:
             raise ValueError("No such state '%s'"%inpState)
 
-    def setVerbosity(self,level=0):
+    def setVerbosity(self,level):
         '''
         Set amount of information displayed by the console handler:
         0  : level + message
         10 : level + functionName + message
-        20 : level + fileName + functionName + message
-        30 : level + fileName + functionName + line + message
+        20 : level + filename + functionName + message
+        30 : level + filename + functionName + line + message
+
+        :param level : <int>
         '''
         if not isinstance(level,int):
             raise ValueError("level must be <int>")
@@ -222,7 +224,7 @@ class _Logger():
             chStr += "%(lvl)s"
         if self.chVerbosity >= 20 :
             chStr += " : "
-            chStr += "%(name)s"
+            chStr += "%(filename)s"
         if self.chVerbosity >= 10 :
             chStr += " : "
             chStr += "%(parentFunc)s"
