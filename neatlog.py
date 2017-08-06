@@ -1,12 +1,9 @@
 import os
 import inspect
-import traceback
 import platform
 from datetime import datetime
 import logging
 import colorlog
-
-from random import choice
 
 class ContextFilter(logging.Filter):
     """
