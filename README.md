@@ -1,4 +1,4 @@
-logger
+neatlog
 
 Very simple but fancy looking logging module.
 It's based on python's standard logging module and uses the colorlog module written by Sam Clements (@borntyping on GitHub) and colorama by Jonathan Hartley (@tartley on GitHub) to output colored logs to the console on Mac, Linux and Windows.
@@ -9,8 +9,8 @@ If you want lots for flexibility this is not the right module.
 #### Basic usage
 You can log messages like in print() without using placeholders or converting values to strings.
 ```python
-from logger import logger
-LOG = logger._Logger('test')
+import neatlog
+LOG = neatlog._Logger('test')
 LOG.debug("I have",99, "problems","but a",type(()),"ain't one.")
 LOG.info('info')
 LOG.warning('warning')
@@ -33,7 +33,6 @@ LOG.setLevel('info')
 LOG.setLevel('warning')
 LOG.setLevel('error')
 LOG.setLevel('critical')
-LOG.setLevel('exception')
 LOG.setLevel(20)
 ```
 
