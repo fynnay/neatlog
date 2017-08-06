@@ -6,6 +6,8 @@ It's based on python's standard logging module and uses the colorlog module writ
 If you quickly want to create informative and easy to read logs with some flexibility this is the right module.
 If you want lots for flexibility this is not the right module.
 
+![example](http://i.imgur.com/mC4lBOQ.png)
+
 #### Basic usage
 You can log messages like in print() without using placeholders or converting values to strings.
 ```python
