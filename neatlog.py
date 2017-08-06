@@ -5,6 +5,8 @@ from datetime import datetime
 import logging
 import colorlog
 
+__version__ = 0.1
+
 class ContextFilter(logging.Filter):
     """
     This is a filter which injects contextual information into the log:
