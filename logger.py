@@ -60,7 +60,7 @@ class _Logger():
             enableFileHandler
 
     '''
-    def __init__(self,name,filePath=None,color=True,verbosity=0):
+    def __init__(self,name,filePath=None,color=True,verbosity=10):
         # Set color usage
         self.useColor = color
         # Name the logger
@@ -303,7 +303,6 @@ def getParentScript(top=False):
 def test():
     LOG = _Logger("logging_howto.py")
     LOG.setLevel('debug')
-    LOG.setVerbosity(10)
 
     # Create some logs from lowest to highest level
     LOG.debug("I have",99, "problems","but a",type(()),"ain't one.")
