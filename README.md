@@ -39,10 +39,16 @@ LOG.setLevel(20)
 ```
 
 #### Change verbosity
-The filehandler always has maximum verbosity.
+This settings is to change how much info is included in each log.
+The consolehandler verbosity default is 10.
+The filehandler always has maximum verbosity so it prints as much info as possible to the logfile.
 You can however change the verbosity of the console handler
 ```python
-LOG.setVerbosity(20)
+LOG.setVerbosity(0)  # Level, message
+LOG.setVerbosity(10) # Level, function, message
+LOG.setVerbosity(20) # Level, file, function, message
+LOG.setVerbosity(30) # Level, file, function, line, message
+LOG.info("something")
 ```
 
 Feel free to suggest stuff or point out bugs etc..
