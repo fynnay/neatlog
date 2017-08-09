@@ -5,13 +5,14 @@ http://en.wikipedia.org/wiki/ANSI_escape_code
 
 Uses colorama as an optional dependancy to support color on Windows
 """
-
-try:
-    import colorama
-except ImportError:
-    pass
-else:
-    colorama.init()
+import platform
+if platform.system() == "Windows":
+    try:
+        import colorama
+    except ImportError:
+        pass
+    else:
+        colorama.init()
 
 __all__ = ('escape_codes', 'parse_colors')
 
