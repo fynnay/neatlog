@@ -5,7 +5,7 @@ from datetime import datetime
 import logging
 import colorlog
 
-__version__ = "1.0.0-beta"
+__version__ = 0.1
 
 class ContextFilter(logging.Filter):
     """
@@ -77,15 +77,7 @@ class _Logger():
         
         # Set Log level
         self.logger.setLevel(logging.DEBUG)
-
-        # Substitute methods
-        self.debug     = self.logger.debug
-        self.info      = self.logger.info
-        self.warning   = self.logger.warning
-        self.error     = self.logger.error
-        self.critical  = self.logger.critical
-        self.exception = self.logger.exception
-
+        
         # Set formatter according to console verbosity
         self.chVerbosity    = verbosity
         self.chFormatter    = None
@@ -106,24 +98,24 @@ class _Logger():
         msg = " ".join( [str(i) for i in inp] )
         return msg
 
-    # def debug(self,*args,**kwargs):
-    #     return self.logger.debug(self.formatForLogging(args))
+    def debug(self,*args,**kwargs):
+        return self.logger.debug(self.formatForLogging(args))
 
-    # def info(self,*args,**kwargs):
-    #     return self.logger.info(self.formatForLogging(args))
+    def info(self,*args,**kwargs):
+        return self.logger.info(self.formatForLogging(args))
 
-    # def warning(self,*args,**kwargs):
-    #     return self.logger.warning(self.formatForLogging(args))
+    def warning(self,*args,**kwargs):
+        return self.logger.warning(self.formatForLogging(args))
 
-    # def error(self,*args,**kwargs):
-    #     return self.logger.error(self.formatForLogging(args))
+    def error(self,*args,**kwargs):
+        return self.logger.error(self.formatForLogging(args))
 
-    # def critical(self,*args,**kwargs):
-    #     return self.logger.critical(self.formatForLogging(args))
+    def critical(self,*args,**kwargs):
+        return self.logger.critical(self.formatForLogging(args))
 
-    # def exception(self,*args,**kwargs):
-    #     # Use 'error' level to avoid parentFunc detection problems
-    #     return self.logger.error(self.formatForLogging(args),exc_info=True)
+    def exception(self,*args,**kwargs):
+        # Use 'error' level to avoid parentFunc detection problems
+        return self.logger.error(self.formatForLogging(args),exc_info=True)
 
     def enableConsoleHandler(self,state):
         # Check if there is already a StreamHandler
@@ -235,7 +227,7 @@ class _Logger():
             chStr += "%(filename)s"
         if self.chVerbosity >= 10 :
             chStr += " : "
-            chStr += "%(funcName)s"
+            chStr += "%(parentFunc)s"
         if self.chVerbosity >= 30 :
             chStr += " : "
             chStr += "%(lineno)d"
@@ -312,17 +304,14 @@ def getParentScript(top=False):
 def test():
     LOG = _Logger("logging_howto.py")
     LOG.setLevel('debug')
-    LOG.setVerbosity(30)
 
     # Create some logs from lowest to highest level
-    LOG.debug('debug {0}'.format("something"))#LOG.debug("I have",99, "problems","but a",type(()),"ain't one.")
+    LOG.debug("I have",99, "problems","but a",type(()),"ain't one.")
     LOG.info('info')
     LOG.warning('warning')
     LOG.error('error')
     LOG.critical('critical')
-    try: 1/0
-    except:
-        LOG.exception("lol")
+    LOG.exception("lol")
 
 # HOW TO USE
 if __name__ == "__main__":
