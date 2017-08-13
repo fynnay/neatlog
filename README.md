@@ -6,14 +6,13 @@ It's based on python's standard logging module and uses the colorlog module writ
 If you quickly want to create informative and easy to read logs with some flexibility this is the right module.
 If you want lots for flexibility this is not the right module.
 
-![example](http://i.imgur.com/mC4lBOQ.png)
+![example](neatlog.png)
 
 #### Basic usage
-You can log messages like in print() without using placeholders or converting values to strings.
 ```python
 import neatlog
 LOG = neatlog._Logger('test')
-LOG.debug("I have",99, "problems","but a",type(()),"ain't one.")
+LOG.debug('debug {0}'.format("something"))
 LOG.info('info')
 LOG.warning('warning')
 LOG.error('error')
@@ -52,3 +51,12 @@ LOG.info("something")
 ```
 
 Feel free to suggest stuff or point out bugs etc..
+
+-- CHANGELOG
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+### [1.0.0-beta] - 2017-08-13
+#### Changed
+- Fixed bug messing with stacktrace, which displayed wrong linenumbers, file- and functionnames in log messages
+
+#### Removed
+- To fix the bug mentioned above, I unfortunately had to remove the functionality to pass a tuple into the log functions. Writing custom functions to for stacktracing correctly got too messy and the payoff isn't big enough. Sorry 'bout that.
