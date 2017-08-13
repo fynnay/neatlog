@@ -315,7 +315,8 @@ def test():
     LOG.setVerbosity(30)
 
     # Create some logs from lowest to highest level
-    LOG.debug('debug {0}'.format("something"))#LOG.debug("I have",99, "problems","but a",type(()),"ain't one.")
+    
+    LOG.debug('debug {0}'.format("something"))
     LOG.info('info')
     LOG.warning('warning')
     LOG.error('error')
