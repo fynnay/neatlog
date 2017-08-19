@@ -54,6 +54,13 @@ Feel free to suggest stuff or point out bugs etc..
 
 -- CHANGELOG
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+
+### [1.0.1-beta] - 2017-08-19
+#### Changed
+- Fixes a bug that caused the fileHandler to log the wrong parent function name
+#### Added
+- FileHandler now has same indentation style as consoleHandler for better readability
+
 ### [1.0.0-beta] - 2017-08-13
 #### Changed
 - Fixed bug messing with stacktrace, which displayed wrong linenumbers, file- and functionnames in log messages
