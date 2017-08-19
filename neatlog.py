@@ -99,31 +99,12 @@ class _Logger():
         # File handler
         self.fh = None
         self.filePath = filePath
-        fhStr = ["%(levelname)s : %(name)s :: %(asctime)s.%(msecs)d - %(parentFunc)s - %(lineno)d >> %(message)s","%H:%M:%S"]
+        fhStr = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
         self.fhFormatter = logging.Formatter(fhStr[0],fhStr[1])
 
     def formatForLogging(self,inp):
         msg = " ".join( [str(i) for i in inp] )
         return msg
-
-    # def debug(self,*args,**kwargs):
-    #     return self.logger.debug(self.formatForLogging(args))
-
-    # def info(self,*args,**kwargs):
-    #     return self.logger.info(self.formatForLogging(args))
-
-    # def warning(self,*args,**kwargs):
-    #     return self.logger.warning(self.formatForLogging(args))
-
-    # def error(self,*args,**kwargs):
-    #     return self.logger.error(self.formatForLogging(args))
-
-    # def critical(self,*args,**kwargs):
-    #     return self.logger.critical(self.formatForLogging(args))
-
-    # def exception(self,*args,**kwargs):
-    #     # Use 'error' level to avoid parentFunc detection problems
-    #     return self.logger.error(self.formatForLogging(args),exc_info=True)
 
     def enableConsoleHandler(self,state):
         # Check if there is already a StreamHandler
