@@ -7,6 +7,9 @@ import colorlog
 
 __version__ = "1.0.1-beta"
 
+#------------------------------
+# LOGGER
+#------------------------------
 class ContextFilter(logging.Filter):
     """
     This is a filter which injects contextual information into the log:
@@ -59,7 +62,7 @@ class _Logger():
             enableFileHandler
 
     '''
-    def __init__(self,name,filePath=None,color=True,verbosity=10):
+    def __init__(self, name, level=None, filePath=None, color=True, verbosity=10):
         # Set color usage
         self.useColor = color
         # Name the logger
@@ -95,6 +98,8 @@ class _Logger():
         self.ch = colorlog.StreamHandler()
         self.setVerbosity(level=verbosity)
         self.enableConsoleHandler(True)
+        if level is not None:
+            self.setLevel(level)
 
         # File handler
         self.fh = None
@@ -162,13 +167,13 @@ class _Logger():
         else:
             raise ValueError("Invalid State. Can only be True or False")
 
-    def setFilePath(self,inp):
+    def setFilePath(self, inp):
         '''
         Sets filePath variable.
         '''
         self.filePath = inp
 
-    def setLevel(self,inpState):
+    def setLevel(self, inpState):
         '''
         Sets the level for the stream handler.
         '''
@@ -232,7 +237,6 @@ class _Logger():
             self.chFormatter = logging.Formatter(chStr)
         self.ch.setFormatter(self.chFormatter)
 
-
 def getParentFunc(top=False,ancestor=0):
     """
     Returns the name of the function that called this function.
@@ -290,22 +294,43 @@ def getParentScript(top=False):
     # Return as list, to prevent having to rewrite all scripts that use this function if you add more things to return later.
     return [csPath]
 
-def test():
-    LOG = _Logger("logging_howto.py")
-    LOG.setLevel('debug')
-    LOG.setVerbosity(30)
+#------------------------------
+# MANAGER
+#------------------------------
+class Manager(object):
+    """
+    Keeps track of all loggers created
+    """
+    def __init__(self):
+        self.loggers = {}
 
-    # Create some logs from lowest to highest level
-    
-    LOG.debug('debug {0}'.format("something"))
-    LOG.info('info')
-    LOG.warning('warning')
-    LOG.error('error')
-    LOG.critical('critical')
-    try: 1/0
-    except:
-        LOG.exception("lol")
+    def get(self, name):
+        """
+        Returns an already registered logger
+        """
+        return self.loggers.get(name)
 
-# HOW TO USE
-if __name__ == "__main__":
-    test()
+    def register(self, name, logger):
+        """
+        Register a new logger and returns it
+        """
+        self.loggers[name] = logger
+        return self.get(name)
+
+MANAGER = Manager()
+
+def getLogger(name, level='error', filePath=None, color=True, verbosity=10):
+    """
+    Returns an existing logger with the specified name, if one exists.
+    If no logger with the specified name exists, register a new one and return that.
+    :name      : <str>  -- Name of the logger
+    :level     : <str>  -- Level of the logger ['debug', 'info', 'warning', 'error', 'critical', 'exception']
+    :filePath  : <str>  -- File path to log file
+    :color     : <bool> -- Use color in console handler [True,[False]]
+    :verbosity : <int>  -- Amount of information to output
+    """
+    logger = MANAGER.get(name)
+    if logger is None:
+        newLogger = _Logger(name, level, filePath, color, verbosity)
+        logger = MANAGER.register(name, newLogger)
+    return logger
