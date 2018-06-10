@@ -3,9 +3,9 @@ import inspect
 import platform
 from datetime import datetime
 import logging
-import colorlog
+from . import colorlog
 
-__version__ = "1.0.1-beta"
+__version__ = "1.0.2-beta"
 
 #------------------------------
 # LOGGER
