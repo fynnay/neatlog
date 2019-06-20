@@ -5,7 +5,7 @@ from datetime import datetime
 import logging
 from . import colorlog
 
-__version__ = "1.0.2-beta"
+__version__ = "1.0.3-beta"
 
 #------------------------------
 # LOGGER
@@ -30,11 +30,11 @@ class ContextFilter(logging.Filter):
         return outp
 
     def filter(self, record):
-        record.topFunc = getParentFunc(top=True)
+        record.topFunc = "test"#getParentFunc(top=True)
         # How many levels to step to reach the function that called one of the log functions (debug, info etc.)
-        record.parentFunc = getParentFunc(ancestor=6)
+        record.parentFunc = "test"#getParentFunc(ancestor=6)
         # Equal indent beginning
-        record.lvl = self.equalIndent(record)
+        record.lvl = "test"#self.equalIndent(record)
         return True
 
 class _Logger():
@@ -77,7 +77,7 @@ class _Logger():
 
         # Prevent loggers from sending their output to loggers created earlier, thus displaying the same output twice.
         self.logger.propagate = False
-        
+
         # Set Log level
         self.logger.setLevel(logging.DEBUG)
 
@@ -280,7 +280,6 @@ def getParentFunc(top=False,ancestor=0):
             else:
                 break
         ret = insp[pos][3]
-    
     return ret
 
 def getParentScript(top=False):
