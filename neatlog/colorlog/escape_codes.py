@@ -3,16 +3,15 @@ Generates a dictionary of ANSI escape codes.
 
 http://en.wikipedia.org/wiki/ANSI_escape_code
 
-Uses colorama as an optional dependancy to support color on Windows
+Uses colorama as an optional dependency to support color on Windows
 """
-import platform
-if platform.system() == "Windows":
-    try:
-        import colorama
-    except ImportError:
-        pass
-    else:
-        colorama.init()
+
+try:
+    import colorama
+except ImportError:
+    pass
+else:
+    colorama.init()
 
 __all__ = ('escape_codes', 'parse_colors')
 
@@ -26,6 +25,7 @@ def esc(*x):
 escape_codes = {
     'reset': esc('0'),
     'bold': esc('01'),
+    'thin': esc('02')
 }
 
 # The color names
@@ -42,10 +42,10 @@ COLORS = [
 
 PREFIXES = [
     # Foreground without prefix
-    ('3', ''), ('01;3', 'bold_'),
+    ('3', ''), ('01;3', 'bold_'), ('02;3', 'thin_'),
 
     # Foreground with fg_ prefix
-    ('3', 'fg_'), ('01;3', 'fg_bold_'),
+    ('3', 'fg_'), ('01;3', 'fg_bold_'), ('02;3', 'fg_thin_'),
 
     # Background with bg_ prefix - bold/light works differently
     ('4', 'bg_'), ('10', 'bg_bold_'),
