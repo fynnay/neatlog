@@ -30,11 +30,11 @@ class ContextFilter(logging.Filter):
         return outp
 
     def filter(self, record):
-        record.topFunc = "test"#getParentFunc(top=True)
+        record.topFunc = getParentFunc(top=True)
         # How many levels to step to reach the function that called one of the log functions (debug, info etc.)
-        record.parentFunc = "test"#getParentFunc(ancestor=6)
+        record.parentFunc = getParentFunc(ancestor=6)
         # Equal indent beginning
-        record.lvl = "test"#self.equalIndent(record)
+        record.lvl = self.equalIndent(record)
         return True
 
 class _Logger():
