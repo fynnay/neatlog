@@ -200,6 +200,7 @@ class _Logger():
         10 : level + functionName + message
         20 : level + filename + functionName + message
         30 : level + filename + functionName + line + message
+        40 : level + time + filename + functionName + line + message
 
         :param level : <int>
         '''
@@ -216,6 +217,9 @@ class _Logger():
         # Build message
         if self.chVerbosity >= 0 :
             chStr += "%(lvl)s"
+        if self.chVerbosity >= 40 :
+            chStr += " : "
+            chStr += "%(asctime)s"
         if self.chVerbosity >= 20 :
             chStr += " : "
             chStr += "%(filename)s"
