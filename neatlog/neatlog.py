@@ -30,9 +30,9 @@ class ContextFilter(logging.Filter):
         return outp
 
     def filter(self, record):
-        # record.topFunc = getParentFunc(top=True)
+        record.topFunc = getParentFunc(top=True)
         # How many levels to step to reach the function that called one of the log functions (debug, info etc.)
-        # record.parentFunc = getParentFunc(ancestor=6)
+        record.parentFunc = getParentFunc(ancestor=6)
         # Equal indent beginning
         record.lvl = self.equalIndent(record)
         return True
@@ -72,8 +72,8 @@ class _Logger():
             self.logger = logging.getLogger(name)
 
         # Add filters
-        # f = ContextFilter()
-        # self.logger.addFilter(f)
+        f = ContextFilter()
+        self.logger.addFilter(f)
 
         # Prevent loggers from sending their output to loggers created earlier, thus displaying the same output twice.
         self.logger.propagate = False
@@ -104,7 +104,7 @@ class _Logger():
         # File handler
         self.fh = None
         self.filePath = filePath
-        fhStr = ["%(levelname)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
+        fhStr = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
         self.fhFormatter = logging.Formatter(fhStr[0],fhStr[1])
 
     def formatForLogging(self,inp):
@@ -216,7 +216,7 @@ class _Logger():
         
         # Build message
         if self.chVerbosity >= 0 :
-            chStr += "%(levelname)s"
+            chStr += "%(lvl)s"
         if self.chVerbosity >= 40 :
             chStr += " : "
             chStr += "%(asctime)s"
