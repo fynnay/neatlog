@@ -30,14 +30,11 @@ class ContextFilter(logging.Filter):
         return outp
 
     def filter(self, record):
-        record.topFunc = getParentFunc(top=True)
-        # How many levels to step to reach the function that called one of the log functions (debug, info etc.)
-        record.parentFunc = getParentFunc(ancestor=6)
         # Equal indent beginning
         record.lvl = self.equalIndent(record)
         return True
 
-class _Logger():
+class _Logger(logging.Logger):
     '''
         NAME
             _Logger - For simple logging and generating a logfile
@@ -62,68 +59,48 @@ class _Logger():
             enableFileHandler
 
     '''
-    def __init__(self, name, level=None, filePath=None, color=True, verbosity=10):
-        # Set color usage
-        self.useColor = color
-        # Name the logger
-        if color is True:
-            self.logger = colorlog.getLogger(name)
-        else:
-            self.logger = logging.getLogger(name)
+    def __init__(self, name, level=logging.DEBUG, filePath=None, color=True, verbosity=10):
+        super(_Logger, self).__init__(name, level=logging.NOTSET)
+        # VARIABLES
+        self._filePath = filePath
+        self._useColor = color
+        self._verbosity = verbosity
+        self._level = getLoggingLevel(level)
 
-        # Add filters
-        f = ContextFilter()
-        self.logger.addFilter(f)
+        # Add filters for equal indenting
+        self.addFilter(ContextFilter())
 
-        # Prevent loggers from sending their output to loggers created earlier, thus displaying the same output twice.
-        self.logger.propagate = False
+        # Prevent logger from sending their output to loggers created earlier, thus displaying the same output twice.
+        self.propagate = False
 
-        # Set Log level
-        self.logger.setLevel(logging.DEBUG)
+        # Formatters
+        self.colorFormatter = None
+        self.plainFormatter = None
 
-        # Substitute methods
-        self.debug     = self.logger.debug
-        self.info      = self.logger.info
-        self.warning   = self.logger.warning
-        self.error     = self.logger.error
-        self.critical  = self.logger.critical
-        self.exception = self.logger.exception
-
-        # Set formatter according to console verbosity
-        self.chVerbosity    = verbosity
-        self.chFormatter    = None
-        self.fhFormatter    = None
-
-        # Console handler
-        self.ch = colorlog.StreamHandler()
-        self.setVerbosity(level=verbosity)
-        self.enableConsoleHandler(True)
-        if level is not None:
-            self.setLevel(level)
+        # Handlers
+        self.consoleHandler = logging.StreamHandler()
+        self.addHandler(self.consoleHandler)
 
         # File handler
-        self.fh = None
-        self.filePath = filePath
+        self.fileHandler = None
         fhStr = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
-        self.fhFormatter = logging.Formatter(fhStr[0],fhStr[1])
+        self.plainFormatter = logging.Formatter(fhStr[0],fhStr[1])
+
+        # Set level and verbosity
+        self.setLevel(self._level)
+        self.setVerbosity(level=verbosity)
+        self.enableConsoleHandler(True)
 
     def formatForLogging(self,inp):
         msg = " ".join( [str(i) for i in inp] )
         return msg
 
-    def enableConsoleHandler(self,state):
+    def enableConsoleHandler(self, state):
         # Check if there is already a StreamHandler
-        chExists = False
-        for h in self.logger.handlers:
-            if isinstance(h,logging.StreamHandler):
-                chExists = True
-        # Only add a StreamHandler if none have been found
-        if chExists == False:
-            self.logger.addHandler(self.ch)
-        if state is False:
-            self.ch.setLevel(100)
-        elif state is True:
-            self.ch.setLevel(logging.ERROR)
+        if state:
+            self.consoleHandler.setLevel(self._level)
+        else:
+            self.consoleHandler.setLevel(999)
 
     def getHeader(self):
         topScript = getParentScript(top=True)[0]
@@ -144,14 +121,14 @@ class _Logger():
             for h in self.logger.handlers:
                 if isinstance(h,logging.FileHandler):
                     self.logger.removeHandler(h)
-            self.fh = None
+            self.fileHandler = None
         elif state is True:
             # Check if filePath is set
-            if self.filePath is None:
+            if self._filePath is None:
                 raise ValueError("self.filePath is None. You need to set it before enabling the fileHandler.")
                 return
             # Append header to file
-            tempfile = open(self.filePath,'a')
+            tempfile = open(self._filePath,'a')
             tempfile.write(self.getHeader())
             tempfile.close()
             # Check if there is already a FileHandler
@@ -160,10 +137,10 @@ class _Logger():
                 if isinstance(h,logging.FileHandler):
                     fhExists = True
             if fhExists == False:
-                self.fh = logging.FileHandler(self.filePath)
-                self.fh.setLevel(logging.DEBUG)
-                self.fh.setFormatter(self.fhFormatter)
-                self.logger.addHandler(self.fh)
+                self.fileHandler = logging.FileHandler(self._filePath)
+                self.fileHandler.setLevel(logging.DEBUG)
+                self.fileHandler.setFormatter(self.plainFormatter)
+                self.logger.addHandler(self.fileHandler)
         else:
             raise ValueError("Invalid State. Can only be True or False")
 
@@ -171,27 +148,18 @@ class _Logger():
         '''
         Sets filePath variable.
         '''
-        self.filePath = inp
+        self._filePath = inp
 
-    def setLevel(self, inpState):
+    def setLevel(self, level):
         '''
         Sets the level for the stream handler.
         '''
-        state = inpState.lower() if isinstance(inpState,str) else inpState
-        if state == 'debug':
-            self.ch.setLevel(logging.DEBUG)
-        elif state == 'info':
-            self.ch.setLevel(logging.INFO)
-        elif state == 'warning':
-            self.ch.setLevel(logging.WARNING)
-        elif state == 'error':
-            self.ch.setLevel(logging.ERROR)
-        elif state == 'critical':
-            self.ch.setLevel(logging.CRITICAL)
-        elif isinstance(state,int):
-            self.ch.setLevel(state)
+        loggingLevel = getLoggingLevel(level)
+        if loggingLevel is None:
+            raise ValueError("Invalid logging level '%s'"%level)
         else:
-            raise ValueError("No such state '%s'"%inpState)
+            self._level = loggingLevel
+            self.consoleHandler.setLevel(loggingLevel)
 
     def setVerbosity(self,level):
         '''
@@ -205,44 +173,61 @@ class _Logger():
         :param level : <int>
         '''
         if not isinstance(level,int):
-            raise ValueError("level must be <int>")
-
-        self.chVerbosity = level
-        
-        # Console Formatter
+            raise ValueError("level must be %s"%(type(1)))
+        # Set verbosity
+        self._verbosity = level
+        # Build console formatter string
         chStr = ""
-        if self.useColor is True:
+        # Add Color
+        if self._useColor is True:
             chStr += "%(log_color)s"
-        
         # Build message
-        if self.chVerbosity >= 0 :
+        if self._verbosity >= 0 :
             chStr += "%(lvl)s"
-        if self.chVerbosity >= 40 :
+        if self._verbosity >= 40 :
             chStr += " : "
-            chStr += "%(asctime)s"
-        if self.chVerbosity >= 20 :
+            chStr += "%(asctime)s.%(msecs)d"
+        if self._verbosity >= 20 :
             chStr += " : "
             chStr += "%(filename)s"
-        if self.chVerbosity >= 10 :
+        if self._verbosity >= 10 :
             chStr += " : "
             chStr += "%(funcName)s"
-        if self.chVerbosity >= 30 :
+        if self._verbosity >= 30 :
             chStr += " : "
             chStr += "%(lineno)d"
         chStr += " >> "
         chStr += "%(message)s"
         
-        if self.useColor:
-            self.chFormatter = colorlog.ColoredFormatter(chStr)
+        if self._useColor:
+            self.colorFormatter = colorlog.ColoredFormatter(chStr)
             # Set colors
-            self.chFormatter.log_colors['DEBUG'] = 'green'
-            self.chFormatter.log_colors['INFO'] = 'white'
+            self.colorFormatter.log_colors['DEBUG'] = 'green'
+            self.colorFormatter.log_colors['INFO'] = 'white'
         else:
-            self.chFormatter = logging.Formatter(chStr)
-        self.ch.setFormatter(self.chFormatter)
+            self.colorFormatter = logging.Formatter(chStr)
+        self.consoleHandler.setFormatter(self.colorFormatter)
+
+def getLoggingLevel(levelName):
+    loggingLevel = None
+    levelDict = {
+        "notset"    : logging.NOTSET,
+        "debug"     : logging.DEBUG,
+        "info"      : logging.INFO,
+        "warning"   : logging.WARNING,
+        "error"     : logging.ERROR,
+        "exception" : logging.CRITICAL
+    }
+    if levelName:
+        if levelName in levelDict.keys():
+            loggingLevel = levelDict[levelName]
+        elif levelName in levelDict.values():
+            loggingLevel = levelName
+    return loggingLevel
 
 def getParentFunc(top=False,ancestor=0):
     """
+    !! DEPRECATED FUNCTION - WILL BE REMOVED IN A FUTURE VERSION !!
     Returns the name of the function that called this function.
     param: ancestor : <int> : Positive values get older ancestors, negative values get younger ancestors. Stops when reaching <module> level.
     param: top : <bool>     : Get the oldest ancestor that is a function. Stops before reaching <module> level.
@@ -283,9 +268,15 @@ def getParentFunc(top=False,ancestor=0):
     return ret
 
 def getParentScript(top=False):
-    '''
+    """
+    !! DEPRECATED FUNCTION - WILL BE REMOVED IN A FUTURE VERSION !!
     Gets the path to the script that called this function
-    '''    
+
+    :param top: Get the topmost function in the chain that caused this fucntion to be called, defaults to False
+    :type top: bool, optional
+    :return: Function
+    :rtype: function
+    """    
     # Inspect current call stack
     insp    = inspect.getouterframes(inspect.currentframe(),2)
     # Get path of the parent script of this one. If there is none, get the topmost ancestor.

@@ -17,7 +17,7 @@ def test():
         LOG.exception("lol")
 
 if __name__ == '__main__':
-    LOG = neatlog.getLogger("logging_howto",level='error', color=True)
+    LOG = neatlog.getLogger("logging_howto", level='error', color=True)
     LOG.setLevel('debug')
     LOG.setVerbosity(30)
     LOG.debug('test')
