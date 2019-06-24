@@ -90,7 +90,6 @@ class _Logger(logging.Logger):
         fhStr = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
         self._plainFormatter = logging.Formatter(fhStr[0],fhStr[1])
 
-
     def formatForLogging(self,inp):
         msg = " ".join( [str(i) for i in inp] )
         return msg
@@ -116,44 +115,53 @@ class _Logger(logging.Logger):
         platform.uname()[0].lower())
         return header
 
-    def enableFileHandler(self,state):
+    def enableFileHandler(self, state):
         '''
         Enable/disable fileHandler.
         You have to setFilePath before you can do this.
         '''
         if state is False:
             # Remove any file handlers
-            for h in self.logger.handlers:
-                if isinstance(h,logging.FileHandler):
-                    self.logger.removeHandler(h)
+            for handler in reversed(self.handlers):
+                if isinstance(handler,logging.FileHandler):
+                    self.removeHandler(handler)
             self._fileHandler = None
         elif state is True:
             # Check if filePath is set
             if self._filePath is None:
-                raise ValueError("self.filePath is None. You need to set it before enabling the fileHandler.")
+                raise ValueError("Filepath is not set. You need to set it with setFilePath before enabling the fileHandler.")
                 return
             # Append header to file
-            tempfile = open(self._filePath,'a')
+            tempfile = open(self._filePath, 'a')
             tempfile.write(self.getHeader())
             tempfile.close()
             # Check if there is already a FileHandler
             fhExists = False
-            for h in self.logger.handlers:
-                if isinstance(h,logging.FileHandler):
+            for h in self.handlers:
+                if isinstance(h, logging.FileHandler):
                     fhExists = True
-            if fhExists == False:
+                    break
+            if fhExists is False:
                 self._fileHandler = logging.FileHandler(self._filePath)
                 self._fileHandler.setLevel(logging.DEBUG)
                 self._fileHandler.setFormatter(self._plainFormatter)
-                self.logger.addHandler(self._fileHandler)
+                self.addHandler(self._fileHandler)
         else:
             raise ValueError("Invalid State. Can only be True or False")
 
-    def setFilePath(self, inp):
+    def setFilePath(self, filePath):
         '''
         Sets filePath variable.
         '''
-        self._filePath = inp
+        self._filePath = filePath
+
+    def filePath(self):
+        """Returns filepath
+
+        :return: File path
+        :rtype: str
+        """
+        return self._filePath
 
     def setLevel(self, level):
         '''
@@ -177,7 +185,7 @@ class _Logger(logging.Logger):
 
         :param level : <int>
         '''
-        if not isinstance(level,int):
+        if not isinstance(level, int):
             raise ValueError("level must be %s"%(type(1)))
         # Set verbosity
         self._verbosity = level
