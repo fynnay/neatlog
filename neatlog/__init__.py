@@ -1,2 +1,2 @@
-from .neatlog import getLogger
-# from .testlog import getLogger
+# from .neatlog import getLogger
+from .testlog import getLogger
