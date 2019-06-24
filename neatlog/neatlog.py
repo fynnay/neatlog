@@ -5,7 +5,7 @@ from datetime import datetime
 import logging
 from . import colorlog
 
-__version__ = "1.0.3-beta"
+__version__ = "2.0.0"
 
 #------------------------------
 # LOGGER
