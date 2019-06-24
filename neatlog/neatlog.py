@@ -60,7 +60,7 @@ class _Logger(logging.Logger):
 
     '''
     def __init__(self, name, level=logging.DEBUG, filePath=None, color=True, verbosity=10):
-        super(_Logger, self).__init__(name, level=logging.NOTSET)
+        super(_Logger, self).__init__(name, level=logging.NOTSET) # Ensure highest level for logger
         # VARIABLES
         self._filePath = filePath
         self._useColor = color
@@ -74,17 +74,17 @@ class _Logger(logging.Logger):
         self.propagate = False
 
         # Formatters
-        self.colorFormatter = None
-        self.plainFormatter = None
+        self._colorFormatter = None
+        self._plainFormatter = None
 
         # Handlers
-        self.consoleHandler = logging.StreamHandler()
-        self.addHandler(self.consoleHandler)
+        self._consoleHandler = logging.StreamHandler()
+        self.addHandler(self._consoleHandler)
 
         # File handler
-        self.fileHandler = None
+        self._fileHandler = None
         fhStr = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
-        self.plainFormatter = logging.Formatter(fhStr[0],fhStr[1])
+        self._plainFormatter = logging.Formatter(fhStr[0],fhStr[1])
 
         # Set level and verbosity
         self.setLevel(self._level)
@@ -98,9 +98,9 @@ class _Logger(logging.Logger):
     def enableConsoleHandler(self, state):
         # Check if there is already a StreamHandler
         if state:
-            self.consoleHandler.setLevel(self._level)
+            self._consoleHandler.setLevel(self._level)
         else:
-            self.consoleHandler.setLevel(999)
+            self._consoleHandler.setLevel(999)
 
     def getHeader(self):
         topScript = getParentScript(top=True)[0]
@@ -121,7 +121,7 @@ class _Logger(logging.Logger):
             for h in self.logger.handlers:
                 if isinstance(h,logging.FileHandler):
                     self.logger.removeHandler(h)
-            self.fileHandler = None
+            self._fileHandler = None
         elif state is True:
             # Check if filePath is set
             if self._filePath is None:
@@ -137,10 +137,10 @@ class _Logger(logging.Logger):
                 if isinstance(h,logging.FileHandler):
                     fhExists = True
             if fhExists == False:
-                self.fileHandler = logging.FileHandler(self._filePath)
-                self.fileHandler.setLevel(logging.DEBUG)
-                self.fileHandler.setFormatter(self.plainFormatter)
-                self.logger.addHandler(self.fileHandler)
+                self._fileHandler = logging.FileHandler(self._filePath)
+                self._fileHandler.setLevel(logging.DEBUG)
+                self._fileHandler.setFormatter(self._plainFormatter)
+                self.logger.addHandler(self._fileHandler)
         else:
             raise ValueError("Invalid State. Can only be True or False")
 
@@ -159,7 +159,7 @@ class _Logger(logging.Logger):
             raise ValueError("Invalid logging level '%s'"%level)
         else:
             self._level = loggingLevel
-            self.consoleHandler.setLevel(loggingLevel)
+            self._consoleHandler.setLevel(loggingLevel)
 
     def setVerbosity(self,level):
         '''
@@ -200,13 +200,13 @@ class _Logger(logging.Logger):
         chStr += "%(message)s"
         
         if self._useColor:
-            self.colorFormatter = colorlog.ColoredFormatter(chStr)
+            self._colorFormatter = colorlog.ColoredFormatter(chStr)
             # Set colors
-            self.colorFormatter.log_colors['DEBUG'] = 'green'
-            self.colorFormatter.log_colors['INFO'] = 'white'
+            self._colorFormatter.log_colors['DEBUG'] = 'green'
+            self._colorFormatter.log_colors['INFO'] = 'white'
         else:
-            self.colorFormatter = logging.Formatter(chStr)
-        self.consoleHandler.setFormatter(self.colorFormatter)
+            self._colorFormatter = logging.Formatter(chStr)
+        self._consoleHandler.setFormatter(self._colorFormatter)
 
 def getLoggingLevel(levelName):
     loggingLevel = None
