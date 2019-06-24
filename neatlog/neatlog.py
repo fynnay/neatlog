@@ -171,9 +171,15 @@ class _Logger(logging.Logger):
         return self._filePath
 
     def setLevel(self, level):
-        '''
-        Sets the level for the stream handler.
-        '''
+        """Sets the level for the stream handler.
+
+        :param level: Level to be set. Can be one of:
+            "notset", "debug", "info", "warning", "error", "exception"
+            or
+            logging.NOTSET, logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL
+        :type level: str | int
+        :raises ValueError: [description]
+        """
         loggingLevel = getLoggingLevel(level)
         if loggingLevel is None:
             raise ValueError("Invalid logging level '%s'"%level)
@@ -238,6 +244,8 @@ def getLoggingLevel(levelName):
         if levelName in levelDict.keys():
             loggingLevel = levelDict[levelName]
         elif levelName in levelDict.values():
+            loggingLevel = levelName
+        elif isinstance(levelName, int):
             loggingLevel = levelName
     return loggingLevel
 
