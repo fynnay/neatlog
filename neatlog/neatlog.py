@@ -74,8 +74,17 @@ class _Logger(logging.Logger):
         self.propagate = False
 
         # Formatters
-        self._colorFormatter = None
-        self._plainFormatter = None
+        self._consoleFormat = ""
+        self._consoleFormatter = colorlog.ColoredFormatter()
+        self._consoleFormatter.log_colors = {
+            'DEBUG':    'cyan',
+            'INFO':     'white',
+            'WARNING':  'yellow',
+            'ERROR':    'red',
+            'CRITICAL': 'red,bg_white',
+        }
+        plainFormatString = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
+        self._plainFormatter = logging.Formatter(plainFormatString[0], plainFormatString[1])
 
         # Console handler
         self._consoleHandler = logging.StreamHandler()
@@ -87,10 +96,8 @@ class _Logger(logging.Logger):
 
         # File handler
         self._fileHandler = None
-        fhStr = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
-        self._plainFormatter = logging.Formatter(fhStr[0],fhStr[1])
 
-    def formatForLogging(self,inp):
+    def formatForLogging(self, inp):
         msg = " ".join( [str(i) for i in inp] )
         return msg
 
@@ -174,7 +181,7 @@ class _Logger(logging.Logger):
             self._level = loggingLevel
             self._consoleHandler.setLevel(loggingLevel)
 
-    def setVerbosity(self,level):
+    def setVerbosity(self, level):
         '''
         Set amount of information displayed by the console handler:
         0  : level + message
@@ -211,15 +218,11 @@ class _Logger(logging.Logger):
             chStr += "%(lineno)d"
         chStr += " >> "
         chStr += "%(message)s"
-        
         if self._useColor:
-            self._colorFormatter = colorlog.ColoredFormatter(chStr)
-            # Set colors
-            self._colorFormatter.log_colors['DEBUG'] = 'green'
-            self._colorFormatter.log_colors['INFO'] = 'white'
+            self._consoleFormatter = colorlog.ColoredFormatter(chStr)
         else:
-            self._colorFormatter = logging.Formatter(chStr)
-        self._consoleHandler.setFormatter(self._colorFormatter)
+            self._consoleFormatter = logging.Formatter(chStr)
+        self._consoleHandler.setFormatter(self._consoleFormatter)
 
 def getLoggingLevel(levelName):
     loggingLevel = None
