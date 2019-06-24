@@ -41,8 +41,8 @@ def last():
         LOG.exception("lol")
 
 if __name__ == '__main__':
-    samples = 1 # How many times to run over the iterations
-    iterations = 500 # How many logs to create
+    samples = 3 # How many times to run over the iterations
+    iterations = 1000 # How many logs to create
 
     # Logging
     fm = logging.Formatter("%(levelname)s : %(filename)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S")
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     lgFinalTime /= samples
 
     # Colorlog
-    fm = colorlog.ColoredFormatter("%(levelname)s : %(filename)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S")
+    fm = colorlog.ColoredFormatter("%(log_color)s%(levelname)s : %(filename)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S")
     ch = colorlog.StreamHandler()
     ch.setFormatter(fm)
     LOG = colorlog.getLogger("colorlog")
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         nlStartTime = time.time()
         for j in range(0, iterations):
             LOG.debug('test')
-        nlFinalTime += time.time()-clStartTime
+        nlFinalTime += time.time()-nlStartTime
     nlFinalTime /= samples
     test()
 

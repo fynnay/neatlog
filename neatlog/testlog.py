@@ -2,8 +2,36 @@ import logging
 from . import colorlog
 
 class Logger(logging.Logger):
-    def __init__(self, name, level, filePath, color, verbosity):
+    def __init__(self, name, level=None, filePath=None, color=True, verbosity=10):
         super().__init__(name)
+        # Prevent loggers from sending their output to loggers created earlier, thus displaying the same output twice.
+        self.propagate = False
+
+        # Formatters
+        self.colorFormatter = colorlog.ColoredFormatter("%(log_color)s%(levelname)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S")
+        self.plainFormatter = logging.Formatter("%(levelname)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S")
+        self.colorFormatter.log_colors['DEBUG'] = 'green'
+        # Handlers
+        self.streamHandler = colorlog.StreamHandler()
+        self.streamHandler.setFormatter(self.colorFormatter)
+        self.addHandler(self.streamHandler)
+
+        # Set level to level
+        self.levelDict = {
+            "notset"    : logging.NOTSET,
+            "debug"     : logging.DEBUG,
+            "info"      : logging.INFO,
+            "warning"   : logging.WARNING,
+            "error"     : logging.ERROR,
+            "exception" : logging.CRITICAL
+        }
+
+    def setLevel(self, level):
+        if isinstance(level, str):
+            level = self.levelDict[level]
+            super().setLevel(level)
+
+    def setVerbosity(self, verbosity):
         pass
 
 class Manager(object):
