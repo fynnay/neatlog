@@ -77,19 +77,19 @@ class _Logger(logging.Logger):
         self._colorFormatter = None
         self._plainFormatter = None
 
-        # Handlers
+        # Console handler
         self._consoleHandler = logging.StreamHandler()
         self.addHandler(self._consoleHandler)
+        self.enableConsoleHandler(True)
+        # Set level and verbosity
+        self.setLevel(self._level)
+        self.setVerbosity(level=verbosity)
 
         # File handler
         self._fileHandler = None
         fhStr = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
         self._plainFormatter = logging.Formatter(fhStr[0],fhStr[1])
 
-        # Set level and verbosity
-        self.setLevel(self._level)
-        self.setVerbosity(level=verbosity)
-        self.enableConsoleHandler(True)
 
     def formatForLogging(self,inp):
         msg = " ".join( [str(i) for i in inp] )
@@ -103,6 +103,11 @@ class _Logger(logging.Logger):
             self._consoleHandler.setLevel(999)
 
     def getHeader(self):
+        """Returns the string that will be in the top of the log file written to by the fileHandler
+
+        :return: Header text
+        :rtype: str
+        """
         topScript = getParentScript(top=True)[0]
         header    = "---- LOG ----\nFile  : %s\nDate  : %s\nHost  : %s\nOS    : %s\n\n"%\
         (topScript,
