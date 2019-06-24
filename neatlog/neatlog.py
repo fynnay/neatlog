@@ -76,13 +76,14 @@ class _Logger(logging.Logger):
         # Formatters
         self._consoleFormat = ""
         self._consoleFormatter = colorlog.ColoredFormatter()
-        self._consoleFormatter.log_colors = {
+        self._consoleColors = {
             'DEBUG':    'cyan',
             'INFO':     'white',
             'WARNING':  'yellow',
             'ERROR':    'red',
             'CRITICAL': 'red,bg_white',
         }
+        self._consoleFormatter.log_colors = self._consoleColors
         plainFormatString = ["%(lvl)s : %(name)s :: %(asctime)s.%(msecs)d - %(funcName)s - %(lineno)d >> %(message)s","%H:%M:%S"]
         self._plainFormatter = logging.Formatter(plainFormatString[0], plainFormatString[1])
 
@@ -228,7 +229,7 @@ class _Logger(logging.Logger):
         chStr += " >> "
         chStr += "%(message)s"
         if self._useColor:
-            self._consoleFormatter = colorlog.ColoredFormatter(chStr)
+            self._consoleFormatter = colorlog.ColoredFormatter(chStr, log_colors=self._consoleColors)
         else:
             self._consoleFormatter = logging.Formatter(chStr)
         self._consoleHandler.setFormatter(self._consoleFormatter)
