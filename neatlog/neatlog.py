@@ -97,17 +97,6 @@ class _Logger(logging.Logger):
         # File handler
         self._fileHandler = None
 
-    def formatForLogging(self, inp):
-        msg = " ".join( [str(i) for i in inp] )
-        return msg
-
-    def enableConsoleHandler(self, state):
-        # Check if there is already a StreamHandler
-        if state:
-            self._consoleHandler.setLevel(self._level)
-        else:
-            self._consoleHandler.setLevel(999)
-
     def getHeader(self):
         """Returns the string that will be in the top of the log file written to by the fileHandler
 
@@ -121,6 +110,13 @@ class _Logger(logging.Logger):
         platform.uname()[1],
         platform.uname()[0].lower())
         return header
+
+    def enableConsoleHandler(self, state):
+        # Check if there is already a StreamHandler
+        if state:
+            self._consoleHandler.setLevel(self._level)
+        else:
+            self._consoleHandler.setLevel(999)
 
     def enableFileHandler(self, state):
         '''
