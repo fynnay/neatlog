@@ -118,11 +118,16 @@ class _Logger(logging.Logger):
         else:
             self._consoleHandler.setLevel(999)
 
-    def enableFileHandler(self, state):
-        '''
-        Enable/disable fileHandler.
-        You have to setFilePath before you can do this.
-        '''
+    def enableFileHandler(self, state, filePath=None):
+        """Enable/disable fileHandler.
+
+        :param state: True or False
+        :type state: bool
+        :param filePath: Path to file for logging entries, defaults to None. Overwrites filePath set earlier.
+        :type filePath: str, optional
+        :raises ValueError: If filepath is not set before or provided here
+        :raises ValueError: If state is not True or False
+        """
         if state is False:
             # Remove any file handlers
             for handler in reversed(self.handlers):
@@ -130,6 +135,8 @@ class _Logger(logging.Logger):
                     self.removeHandler(handler)
             self._fileHandler = None
         elif state is True:
+            if filePath:
+                self.setFilePath(filePath)
             # Check if filePath is set
             if self._filePath is None:
                 raise ValueError("Filepath is not set. You need to set it with setFilePath before enabling the fileHandler.")
