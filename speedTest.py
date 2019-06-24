@@ -75,7 +75,7 @@ if __name__ == '__main__':
     clFinalTime /= samples
 
     # Neatlog
-    LOG = neatlog.getLogger("neatlog")
+    LOG = neatlog.getLogger("neatlog", color=False)
     LOG.setLevel('debug')
     LOG.setVerbosity(100)
     nlFinalTime = 0
