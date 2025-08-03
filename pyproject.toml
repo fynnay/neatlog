@@ -13,6 +13,8 @@ dependencies = [
 windows = [
     "colorama>=0.3.7",
 ]
+license = "MIT"
+license-files = "LICEN[CS]E.txt"
 authors = [
     {name="Fynn Laue"}
 ]
