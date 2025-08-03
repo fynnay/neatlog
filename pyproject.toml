@@ -13,6 +13,9 @@ dependencies = [
 windows = [
     "colorama>=0.3.7",
 ]
+dev = [
+    "pytest",
+]
 license = "MIT"
 license-files = "LICEN[CS]E.txt"
 authors = [
