@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "neatlog"
+dynamic = "version"
+requires-python = ">=3.7"
+dependencies = [
+    "colorlog>=4",
+]
+[project.optional-dependencies]
+windows = [
+    "colorama>=0.3.7",
+]
+authors = [
+    {name="Fynn Laue"}
+]
+readme = "README.md"
+keywords = ["log", "logging", "color", "colour"]
