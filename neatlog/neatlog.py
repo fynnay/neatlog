@@ -1,7 +1,7 @@
 import inspect
 import logging
 import platform
-from datetime import datetime
+import datetime
 
 import colorlog
 
@@ -82,9 +82,9 @@ class _Logger(logging.Logger):
         topScript = getParentScript(top=True)[0]
         header    = "---- LOG ----\nFile  : %s\nDate  : %s\nHost  : %s\nOS    : %s\n\n"%\
         (topScript,
-        datetime.now(),
-        platform.uname()[1],
-        platform.uname()[0].lower())
+         datetime.datetime.now(),
+         platform.uname()[1],
+         platform.uname()[0].lower())
         return header
 
     def enableConsoleHandler(self, state):
