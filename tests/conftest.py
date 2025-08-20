@@ -1,3 +1,4 @@
+import logging
 import datetime
 
 import pytest
@@ -17,34 +18,21 @@ def f_logger(
     return neatlog.neatlog._Logger(f_logger_name)
 
 
-@pytest.fixture
-def level_notset_str():
-    return "notset"
+@pytest.fixture(params=[
+    logging.NOTSET,
+    logging.DEBUG,
+    logging.INFO,
+    logging.WARNING,
+    logging.ERROR,
+    logging.CRITICAL,
+])
+def f_level(request):
+    return request.param
 
 
 @pytest.fixture
-def level_debug_str():
-    return "debug"
-
-
-@pytest.fixture
-def level_info_str():
-    return "info"
-
-
-@pytest.fixture
-def level_warning_str():
-    return "warning"
-
-
-@pytest.fixture
-def level_error_str():
-    return "error"
-
-
-@pytest.fixture
-def level_exception_str():
-    return "exception"
+def f_level_str(f_level):
+    return f_level.name.lower()
 
 
 @pytest.fixture
