@@ -1,11 +1,9 @@
-import os
 import inspect
+import logging
 import platform
 from datetime import datetime
-import logging
-from . import colorlog
 
-__version__ = "2.0.1"
+import colorlog
 
 
 class ContextFilter(logging.Filter):
