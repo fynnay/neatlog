@@ -33,7 +33,7 @@ class TestLogger:
             state,
             expected,
             f_logger,
-        ):
+    ):
         f_logger.enableConsoleHandler(state)
 
         assert f_logger._consoleHandler.level == expected
@@ -67,7 +67,6 @@ class TestLogger:
             else:
                 # FileHandler always has the lowest level to log everything
                 assert f_logger._fileHandler.level == logging.DEBUG
-
 
     @pytest.mark.parametrize(
         ["file_path", "expected"],
@@ -129,5 +128,49 @@ class TestLogger:
             exe()
             assert f_logger._level == expected
 
-    def test_set_verbosity(self):
-        pytest.fail()
+    @pytest.mark.parametrize(
+        ["color_on"],
+        [
+            [True],
+            [False],
+        ]
+    )
+    @pytest.mark.parametrize(
+        ["verbosity", "expected"],
+        [
+            [0.0, ValueError],
+            [None, ValueError],
+            [-10, " >> %(message)s"],
+            [0, "%(lvl)s >> %(message)s"],
+            [10, "%(lvl)s : %(funcName)s >> %(message)s"],
+            [20, "%(lvl)s : %(filename)s : %(funcName)s >> %(message)s"],
+            [30, "%(lvl)s : %(filename)s : %(funcName)s : %(lineno)d >> %(message)s"],
+            [40, "%(lvl)s : %(asctime)s.%(msecs)d : %(filename)s : %(funcName)s : %(lineno)d >> %(message)s"],
+            [100, "%(lvl)s : %(asctime)s.%(msecs)d : %(filename)s : %(funcName)s : %(lineno)d >> %(message)s"],
+        ]
+    )
+    def test_set_verbosity(
+            self,
+            monkeypatch,
+            verbosity,
+            color_on,
+            expected,
+            f_logger,
+    ):
+        def exe():
+            f_logger.setVerbosity(verbosity)
+
+        monkeypatch.setattr(f_logger, "_verbosity", None)
+        monkeypatch.setattr(f_logger, "_useColor", color_on)
+
+        if expected is ValueError:
+            with pytest.raises(expected):
+                exe()
+        else:
+            exe()
+            if color_on is True:
+                expected_mod = f"%(log_color)s{expected}"
+            else:
+                expected_mod = f"{expected}"
+
+            assert f_logger._consoleFormatter._fmt == expected_mod
