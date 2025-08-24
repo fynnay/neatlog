@@ -1,7 +1,7 @@
+import datetime
 import inspect
 import logging
 import platform
-import datetime
 
 import colorlog
 
