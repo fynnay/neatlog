@@ -10,11 +10,16 @@ It's based on python's standard logging module and uses the `colorlog` module wr
 
 ![example](neatlog.png)
 
-#### Basic usage
+# Usage
+
+## Setup & Logging
+
+Please note, that you can also specify the level differently - see [Change logging level](#change-logging-level).
+
 ```python
 import neatlog
 
-LOG = neatlog.getLogger('MyLogger')
+LOG = neatlog.getLogger("MyLogger", level="debug")
 
 LOG.debug(f"debug {'something'}")
 LOG.info("info")
@@ -24,32 +29,22 @@ LOG.critical("critical")
 LOG.exception("exception")
 ```
 
-#### Enable file handler
+## Change logging level
 
-```python
-import neatlog
-
-LOG = neatlog.getLogger('MyLogger')
-
-LOG.enableFileHandler(True, filePath="/tmp/MyLogger_test.log")
-```
-
-#### Change logging level
-
-Input the level's name as a string, integer or use the python `logging` module's [standard values](https://docs.python.org/2/library/logging.html#logging-levels). 
+Set the level by name, integer or the `logging` module's [standard values](https://docs.python.org/2/library/logging.html#logging-levels).
 
 ```python
 import logging
 import neatlog
 
-LOG = neatlog.getLogger('MyLogger')
+LOG = neatlog.getLogger("MyLogger")
 
 LOG.setLevel("info")
 LOG.setLevel(20)
 LOG.setLevel(logging.INFO)
 ```
 
-#### Change verbosity
+## Change verbosity
 
 Change how much info is included in each log entry.
 
@@ -61,12 +56,22 @@ The info that's included at each verbosity is predefined to:
 ```python
 import neatlog
 
-LOG = neatlog.getLogger('MyLogger')
+LOG = neatlog.getLogger("MyLogger")
 
 LOG.setVerbosity(0)  # level, message
 LOG.setVerbosity(10) # level, function, message
 LOG.setVerbosity(20) # level, file, function, message
 LOG.setVerbosity(30) # level, file, function, line, message
+```
+
+## Enable file handler
+
+```python
+import neatlog
+
+LOG = neatlog.getLogger("MyLogger")
+
+LOG.enableFileHandler(True, filePath="/tmp/MyLogger_test.log")
 ```
 
 # Dependencies
