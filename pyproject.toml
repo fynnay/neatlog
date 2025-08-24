@@ -28,4 +28,5 @@ windows = [
 dev = [
     "pytest",
     "pytest-lazy-fixture",
+    "coverage",
 ]
