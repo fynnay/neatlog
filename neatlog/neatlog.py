@@ -125,7 +125,6 @@ class _Logger(logging.Logger):
             # Check if filePath is set
             if self._filePath is None:
                 raise ValueError("Filepath is not set. You need to set it with setFilePath before enabling the fileHandler.")
-                return
 
             # Append header to file.
             # TODO: Only add if file doesn't exist yet
