@@ -87,3 +87,16 @@ def f_file_name() -> str:
 @pytest.fixture
 def f_file_path(tmp_path, f_file_name) -> Path:
     return Path(tmp_path) / f_file_name
+
+
+@pytest.fixture(params=[
+    -10,
+    0,
+    10,
+    20,
+    30,
+    40,
+    100,
+])
+def verbosity(request) -> int:
+    return request.param
