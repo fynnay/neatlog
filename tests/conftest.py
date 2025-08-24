@@ -14,8 +14,9 @@ def f_logger_name() -> str:
 @pytest.fixture
 def f_logger(
         f_logger_name,
+        f_level,
 ) -> neatlog.neatlog._Logger:
-    return neatlog.neatlog._Logger(f_logger_name)
+    return neatlog.neatlog._Logger(f_logger_name, level=f_level)
 
 
 @pytest.fixture(params=[
