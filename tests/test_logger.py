@@ -39,6 +39,13 @@ class TestLogger:
         assert f_logger._consoleHandler.level == expected
 
     @pytest.mark.parametrize(
+        ["already_on", "expected_level"],
+        [
+            [True, logging.WARNING],
+            [False, logging.DEBUG],
+        ]
+    )
+    @pytest.mark.parametrize(
         ["state", "file_path", "expected"],
         [
             [True, None, ValueError],
@@ -48,15 +55,29 @@ class TestLogger:
     )
     def test_enable_file_handler(
             self,
+            monkeypatch,
+            f_file_path,
+            already_on,
+            expected_level,
             state,
             file_path,
             expected,
             f_logger,
     ):
+        mocked_file_handler = None
+        mocked_level = logging.WARNING
+
+        if already_on:
+            monkeypatch.setattr(f_logger, "_filePath", f_file_path)
+            mocked_file_handler = logging.FileHandler(f_file_path)
+            mocked_file_handler.setLevel(mocked_level)
+            monkeypatch.setattr(f_logger, "_fileHandler", mocked_file_handler)
+            monkeypatch.setattr(f_logger, "handlers", [mocked_file_handler])
+
         def exe():
             return f_logger.enableFileHandler(state, filePath=file_path)
 
-        if isclass(expected) and issubclass(expected, Exception):
+        if already_on is False and isclass(expected) and issubclass(expected, Exception):
             with pytest.raises(expected):
                 exe()
         else:
@@ -65,8 +86,7 @@ class TestLogger:
             if expected is None:
                 assert f_logger._fileHandler is None
             else:
-                # FileHandler always has the lowest level to log everything
-                assert f_logger._fileHandler.level == logging.DEBUG
+                assert f_logger._fileHandler.level == expected_level
 
     @pytest.mark.parametrize(
         ["file_path", "expected"],
