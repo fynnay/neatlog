@@ -1,5 +1,6 @@
 import datetime
 import logging
+from pathlib import Path
 
 import pytest
 
@@ -76,3 +77,13 @@ def f_header(top_script, date_time_now, os_name, host_name):
         f"\n"
     )
     return header
+
+
+@pytest.fixture
+def f_file_name() -> str:
+    return "MyLogger.log"
+
+
+@pytest.fixture
+def f_file_path(tmp_path, f_file_name) -> Path:
+    return Path(tmp_path) / f_file_name

@@ -1,3 +1,7 @@
+import logging
+from inspect import isclass
+from typing import Optional, Type
+
 import pytest
 from pytest_lazyfixture import lazy_fixture as lf
 
@@ -34,8 +38,36 @@ class TestLogger:
 
         assert f_logger._consoleHandler.level == expected
 
-    def test_enable_file_handler(self):
-        pytest.fail()
+    @pytest.mark.parametrize(
+        ["state", "file_path", "expected"],
+        [
+            [True, None, ValueError],
+            [False, None, None],
+            [True, lf("f_file_path"), lf("f_level")],
+        ]
+    )
+    def test_enable_file_handler(
+            self,
+            state,
+            file_path,
+            expected,
+            f_logger,
+    ):
+        def exe():
+            return f_logger.enableFileHandler(state, filePath=file_path)
+
+        if isclass(expected) and issubclass(expected, Exception):
+            with pytest.raises(expected):
+                exe()
+        else:
+            exe()
+
+            if expected is None:
+                assert f_logger._fileHandler is None
+            else:
+                # FileHandler always has lowest level to log everything
+                assert f_logger._fileHandler.level == logging.DEBUG
+
 
     def test_set_file_path(self):
         pytest.fail()
