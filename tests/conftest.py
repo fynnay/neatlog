@@ -1,5 +1,5 @@
-import logging
 import datetime
+import logging
 
 import pytest
 
@@ -32,7 +32,7 @@ def f_level(request):
 
 @pytest.fixture
 def f_level_str(f_level):
-    return f_level.name.lower()
+    return logging.getLevelName(f_level).lower()
 
 
 @pytest.fixture
