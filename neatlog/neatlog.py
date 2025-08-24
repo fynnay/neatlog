@@ -259,50 +259,6 @@ def getLoggingLevel(levelName):
 
     return loggingLevel
 
-def getParentFunc(top=False,ancestor=0):
-    """
-    !! DEPRECATED FUNCTION - WILL BE REMOVED IN A FUTURE VERSION !!
-
-    Returns the name of the function that called this function.
-    param: ancestor : <int> : Positive values get older ancestors, negative values get younger ancestors. Stops when reaching <module> level.
-    param: top : <bool>     : Get the oldest ancestor that is a function. Stops before reaching <module> level.
-
-    Example:
-    def first():
-        return second()
-
-    def second():
-        print( getParentFunc() )
-        print( getParentFunc(ancestor=1) )
-        print( getParentFunc(ancestor=2) )
-        print( getParentFunc(ancestor=-1) )
-        print( getParentFunc(top=True) )
-        return
-    first()
-
-    # Output:
-    >>> second
-    >>> first
-    >>> <module>
-    >>> getParentFunc
-    >>> first
-    """
-    insp = inspect.getouterframes( inspect.currentframe() )
-    if top is True:
-        ret = insp[len(insp)-2][3]
-    else:
-        pos = 1+ancestor
-        # Make sure pos is not more or lens than len(insp)
-        while True:
-            if pos >=len(insp):
-                pos -= 1
-            elif pos < 0:
-                pos+=1
-            else:
-                break
-        ret = insp[pos][3]
-    return ret
-
 def getParentScript(top=False):
     """
     !! DEPRECATED FUNCTION - WILL BE REMOVED IN A FUTURE VERSION !!
