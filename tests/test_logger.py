@@ -48,6 +48,7 @@ class TestLogger:
     @pytest.mark.parametrize(
         ["state", "file_path", "expected"],
         [
+            [None, None, ValueError],
             [True, None, ValueError],
             [False, None, None],
             [True, lf("f_file_path"), lf("f_level")],
@@ -77,7 +78,7 @@ class TestLogger:
         def exe():
             return f_logger.enableFileHandler(state, filePath=file_path)
 
-        if already_on is False and isclass(expected) and issubclass(expected, Exception):
+        if (already_on is False or state is None) and isclass(expected) and issubclass(expected, Exception):
             with pytest.raises(expected):
                 exe()
         else:
