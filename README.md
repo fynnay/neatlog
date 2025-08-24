@@ -110,7 +110,7 @@ I'd like to keep this little module small and simple. Bug fixes (and reports) ar
 
 ---
 
-# CHANGELOG
+# Changelog
 
 Based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
