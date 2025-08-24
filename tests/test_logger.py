@@ -196,3 +196,20 @@ class TestLogger:
                 expected_mod = f"{expected}"
 
             assert f_logger._consoleFormatter._fmt == expected_mod
+
+    def test_log(
+            self,
+            monkeypatch,
+            f_message,
+            f_level,
+            f_logger,
+            f_get_logger_method,
+    ):
+        monkeypatch.setattr(f_logger, "_level", f_level)
+        logger_method = f_get_logger_method(f_logger)
+        try:
+            logger_method(f_message)
+        except RuntimeError:
+            pytest.fail(f"Failed while running logger method {logger_method}")
+        else:
+            assert True

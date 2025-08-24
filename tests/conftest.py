@@ -21,6 +21,21 @@ def f_logger(
 
 
 @pytest.fixture(params=[
+    lambda x: x.debug,
+    lambda x: x.info,
+    lambda x: x.warning,
+    lambda x: x.error,
+    lambda x: x.critical,
+    lambda x: x.exception,
+])
+def f_get_logger_method(
+        request,
+):
+    lamb = request.param
+    return lamb
+
+
+@pytest.fixture(params=[
     logging.NOTSET,
     logging.DEBUG,
     logging.INFO,
@@ -100,3 +115,8 @@ def f_file_path(tmp_path, f_file_name) -> Path:
 ])
 def f_verbosity(request) -> int:
     return request.param
+
+
+@pytest.fixture
+def f_message() -> str:
+    return "something something loggy McLogFace"
