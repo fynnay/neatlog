@@ -87,7 +87,7 @@ class _Logger(logging.Logger):
          platform.uname()[0].lower())
         return header
 
-    def enableConsoleHandler(self, state):
+    def enableConsoleHandler(self, state: bool):
         """
         Enables the stream handler for console output
         """
