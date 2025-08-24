@@ -1,22 +1,22 @@
-neatlog
+# neatlog
 
 Very simple but fancy looking logging module.
-It's based on python's standard logging module and uses the colorlog module written by Sam Clements (@borntyping on GitHub) and colorama by Jonathan Hartley (@tartley on GitHub) to output colored logs to the console on Mac, Linux and Windows.
+It's based on python's standard logging module and uses the `colorlog` module written by Sam Clements (@borntyping on GitHub) for outputting colorized logs in the terminal and `colorama` by Jonathan Hartley (@tartley on GitHub) for Windows support.
 
-If you quickly want to create informative and easy to read logs with some flexibility this is the right module.
-If you want lots for flexibility this is not the right module.
+Want to quickly create informative and easy to read logs? Then this is the right module for you.
+Want lots of customizability? This is not the right module for you.
 
 ![example](neatlog.png)
 
 #### Basic usage
 ```python
 import neatlog
-LOG = neatlog._Logger('test')
-LOG.debug('debug {0}'.format("something"))
-LOG.info('info')
-LOG.warning('warning')
-LOG.error('error')
-LOG.critical('critical')
+LOG = neatlog.getLogger('MyLogger')
+LOG.debug(f"debug {'something'}")
+LOG.info("info")
+LOG.warning("warning")
+LOG.error("error")
+LOG.critical("critical")
 LOG.exception("exception")
 ```
 
