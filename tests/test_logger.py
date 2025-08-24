@@ -16,8 +16,26 @@ class TestLogger:
         value = f_logger.getHeader()
         assert value == f_header
 
-    def test_enable_console_handler(self):
-        pytest.fail()
+    @pytest.mark.parametrize(
+        ["state", "expected"],
+        [
+            [False, 999],
+            [True, "f_level"]
+        ]
+    )
+    def test_enable_console_handler(
+            self,
+            request,
+            state,
+            expected,
+            f_logger,
+        ):
+        if isinstance(expected, str):
+            expected = request.getfixturevalue(expected)
+
+        f_logger.enableConsoleHandler(state)
+
+        assert f_logger._consoleHandler.level == expected
 
     def test_enable_file_handler(self):
         pytest.fail()
