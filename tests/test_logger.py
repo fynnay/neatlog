@@ -127,6 +127,7 @@ class TestLogger:
         [
             [lf("f_level_str"), lf("f_level")],
             [lf("f_level"), lf("f_level")],
+            [14, 14],
             [None, ValueError]
         ]
     )
