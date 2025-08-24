@@ -65,7 +65,7 @@ class TestLogger:
             if expected is None:
                 assert f_logger._fileHandler is None
             else:
-                # FileHandler always has lowest level to log everything
+                # FileHandler always has the lowest level to log everything
                 assert f_logger._fileHandler.level == logging.DEBUG
 
 
