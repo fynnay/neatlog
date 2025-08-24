@@ -102,8 +102,32 @@ class TestLogger:
         monkeypatch.setattr(f_logger, "_filePath", file_path)
         assert f_logger.filePath() == expected
 
-    def test_set_level(self):
-        pytest.fail()
+    @pytest.mark.parametrize(
+        ["level", "expected"],
+        [
+            [lf("f_level_str"), lf("f_level")],
+            [lf("f_level"), lf("f_level")],
+            [None, ValueError]
+        ]
+    )
+    def test_set_level(
+            self,
+            monkeypatch,
+            level,
+            expected,
+            f_logger,
+    ):
+        monkeypatch.setattr(f_logger, "_level", None)
+
+        def exe():
+            f_logger.setLevel(level)
+
+        if expected is ValueError:
+            with pytest.raises(expected):
+                exe()
+        else:
+            exe()
+            assert f_logger._level == expected
 
     def test_set_verbosity(self):
         pytest.fail()
