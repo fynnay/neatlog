@@ -249,7 +249,7 @@ def getLoggingLevel(levelName):
         "exception" : logging.CRITICAL
     }
 
-    if levelName:
+    if levelName is not None:
         if levelName in levelDict.keys():
             loggingLevel = levelDict[levelName]
         elif levelName in levelDict.values():
