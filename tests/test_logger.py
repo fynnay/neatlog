@@ -85,8 +85,22 @@ class TestLogger:
         f_logger.setFilePath(file_path)
         assert f_logger._filePath == file_path
 
-    def test_file_path(self):
-        pytest.fail()
+    @pytest.mark.parametrize(
+        ["file_path", "expected"],
+        [
+            [lf("f_file_path"), lf("f_file_path")],
+            [None, None],
+        ]
+    )
+    def test_file_path(
+            self,
+            monkeypatch,
+            file_path,
+            expected,
+            f_logger,
+    ):
+        monkeypatch.setattr(f_logger, "_filePath", file_path)
+        assert f_logger.filePath() == expected
 
     def test_set_level(self):
         pytest.fail()
