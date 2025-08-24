@@ -246,7 +246,8 @@ def getLoggingLevel(levelName):
         "info"      : logging.INFO,
         "warning"   : logging.WARNING,
         "error"     : logging.ERROR,
-        "exception" : logging.CRITICAL
+        "exception" : logging.CRITICAL,
+        "critical": logging.CRITICAL,
     }
 
     if levelName is not None:
