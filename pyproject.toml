@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling >= 1"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "neatlog/__init__.py"
+
+
+[project]
+name = "neatlog"
+dynamic = [
+    "version"
+]
+requires-python = ">=3.7"
+dependencies = [
+    "colorlog>4, <6",
+]
+license = "MIT"
+authors = [
+    {name="Fynn Laue"}
+]
+readme = "README.md"
+keywords = ["log", "logging", "color", "colour"]
+[project.optional-dependencies]
+windows = [
+    "colorama>=0.3.7, <=0.4.6",
+]
+dev = [
+    "pytest",
+    "pytest-lazy-fixture",
+    "coverage",
+]
